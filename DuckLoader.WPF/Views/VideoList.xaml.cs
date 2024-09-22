@@ -27,4 +27,13 @@ public partial class VideoList : UserControl
     {
         InitializeComponent();
     }
+
+    private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+    {
+        if(e.VerticalOffset % 5 == 0)
+        {
+            var vieModel = this.DataContext as ViewModels.VideoListViewModel;
+            //vieModel?.SearchVideos();
+        }
+    }
 }

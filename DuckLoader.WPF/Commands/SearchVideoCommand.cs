@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using DuckLoader.WPF.Models;
+
+using MediatR;
 
 using System;
 using System.Collections.Generic;
@@ -12,10 +14,11 @@ namespace DuckLoader.WPF.Commands;
 /// <summary>
 /// Represents a command to search for videos.
 /// </summary>
-public class SearchVideoCommand : IRequest<List<VideoSearchResult>>
+public class SearchVideoCommand : IRequest<(string, List<VideoSearchResultModel>)>
 {
     /// <summary>
     /// Gets or sets the search term for the video.
     /// </summary>
     public string VideoSearchTerm { get; set; } = string.Empty;
+    public string PageToken { get; set; } = string.Empty;
 }

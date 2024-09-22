@@ -1,4 +1,5 @@
 ﻿using DuckLoader.WPF.Commands;
+using DuckLoader.WPF.Models;
 using DuckLoader.WPF.Utilities;
 
 using Duckpond.WPF.Common.BaseClasses;
@@ -29,7 +30,7 @@ public class VideoListViewModel : BaseViewModel
     private readonly IMediator mediator;
     private readonly SessionContext sessionContext;
     private bool isLoading = false;
-    private ObservableCollection<VideoSearchResult> videos;
+    private ObservableCollection<VideoSearchResultModel> videos = new ObservableCollection<VideoSearchResultModel>();
     private string videoSearchTerm;
 
     #endregion Private Fields
@@ -85,13 +86,14 @@ public class VideoListViewModel : BaseViewModel
     /// <summary>
     /// Gets or sets the collection of video search results.
     /// </summary>
-    public ObservableCollection<VideoSearchResult> Videos { get => videos; set { videos = value; OnPropertyChanged(); } }
+    public ObservableCollection<VideoSearchResultModel> Videos { get => videos; set { videos = value; OnPropertyChanged(); } }
 
     /// <summary>
     /// Gets or sets the video search term.
     /// </summary>
     public string VideoSearchTerm { get => videoSearchTerm; set { videoSearchTerm = value; OnPropertyChanged(); } }
 
+    public string NextPage { get; set; } = string.Empty;
     #endregion Public Properties
 
     #region Private Methods
@@ -108,10 +110,11 @@ public class VideoListViewModel : BaseViewModel
     /// <summary>
     /// Searches for videos.
     /// </summary>
-    private async void SearchVideos()
+    public async void SearchVideos()
     {
         IsLoading = true;
-        Videos = new ObservableCollection<VideoSearchResult>(await mediator.Send(new SearchVideoCommand() { VideoSearchTerm = VideoSearchTerm }));
+        (NextPage, var list) = await mediator.Send(new SearchVideoCommand() { VideoSearchTerm = VideoSearchTerm, PageToken = NextPage });
+        list.ForEach(video => Videos.Add(video));
         IsLoading = false;
     }
 

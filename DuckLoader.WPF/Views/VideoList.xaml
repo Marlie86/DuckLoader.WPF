@@ -18,7 +18,7 @@
         <ListBox ItemsSource="{Binding Path=Videos}" HorizontalContentAlignment="Stretch" Style="{StaticResource MaterialDesignCardsListBox}" Margin="5">
             <ListBox.Template>
                 <ControlTemplate>
-                    <ScrollViewer HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                    <ScrollViewer HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" ScrollChanged="ScrollViewer_ScrollChanged">
                         <ItemsPresenter></ItemsPresenter>
                     </ScrollViewer>
                 </ControlTemplate>
@@ -34,18 +34,18 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="120"/>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="90"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="90"/>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="30"/>
                             </Grid.RowDefinitions>
 
-                            <Image Grid.Column="0" Source="{Binding Path=Thumbnails[0], Converter={StaticResource UrlToImageConverter}}"></Image>
+                            <Image Grid.Column="0" Source="{Binding Path=Thumbnail, Converter={StaticResource UrlToImageConverter}}"></Image>
                             <StackPanel Grid.Column="1" Margin="10">
                                 <TextBlock Text="{Binding Path=Title}" Style="{StaticResource MaterialDesignBody1TextBlock}"></TextBlock>
                                 <TextBlock Text="{Binding Path=Author}" Style="{StaticResource MaterialDesignBody2TextBlock}"></TextBlock>
                             </StackPanel>
-                            <Button Grid.Column="2" VerticalAlignment="Bottom" HorizontalAlignment="Right" 
+                            <Button Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" 
                                     Command="{Binding Source={StaticResource dataContextSpy}, Path=DataContext.DownloadVideoCommand}" CommandParameter="{Binding Path=Url}"
                                     Content="{Binding Path=download:20:Teal, Source={StaticResource IconLoader}}" Style="{StaticResource MaterialDesignToolButton}"/>
                         </Grid>

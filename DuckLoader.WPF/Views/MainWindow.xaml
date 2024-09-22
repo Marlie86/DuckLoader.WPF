@@ -26,7 +26,7 @@
                 </Border>
             </StackPanel>
 
-            <Border  Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Padding="40,0,40,0">
+            <Border  Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Padding="80,0,80,0">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
