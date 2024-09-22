@@ -1,5 +1,4 @@
 ﻿using DuckLoader.WPF.Commands;
-using DuckLoader.WPF.Models;
 
 using MediatR;
 
@@ -32,7 +31,6 @@ public class SearchVideoCommandHandler : IRequestHandler<SearchVideoCommand, Lis
     public async Task<List<VideoSearchResult>> Handle(SearchVideoCommand request, CancellationToken cancellationToken)
     {
         var youtube = new YoutubeClient();
-        var searchQuery = new VideoSearchModel() { MaxResults = 10, Q = request.VideoSearchTerm };
         var searchResults = await youtube.Search.GetVideosAsync(request.VideoSearchTerm, cancellationToken);
 
         return searchResults.ToList();
