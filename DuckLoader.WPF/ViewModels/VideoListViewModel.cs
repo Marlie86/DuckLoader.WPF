@@ -130,7 +130,7 @@ public class VideoListViewModel : BaseViewModel
     /// <summary>
     /// Searches for videos.
     /// </summary>
-    private async void SearchVideos()
+    public async void SearchVideos()
     {
         IsLoading = true;
         if (!NextPage.Equals("end", StringComparison.InvariantCultureIgnoreCase))
