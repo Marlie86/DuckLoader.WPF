@@ -72,6 +72,8 @@ public partial class App : Application
         serviceCollection.AddTransient<MainWindowViewModel>();
         serviceCollection.AddTransient<VideoList>();
         serviceCollection.AddTransient<VideoListViewModel>();
+        serviceCollection.AddTransient<Options>();
+        serviceCollection.AddTransient<OptionsViewModel>();
     }
 }
 

@@ -28,12 +28,19 @@ public partial class VideoList : UserControl
         InitializeComponent();
     }
 
+    /// <summary>
+    /// Handles the scroll changed event of the ScrollViewer control.
+    /// It triggers the search for more videos when the user scrolls to the near bottom of the list.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The <see cref="ScrollChangedEventArgs"/> instance containing the event data.</param>
     private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
     {
-        if(e.VerticalOffset % 5 == 0)
+        var scrollViewer = (ScrollViewer)sender;
+        if (scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight * 0.9)
         {
-            var vieModel = this.DataContext as ViewModels.VideoListViewModel;
-            //vieModel?.SearchVideos();
+            var viewModel = (ViewModels.VideoListViewModel)DataContext;
+            viewModel.SearchVideos();
         }
     }
 }

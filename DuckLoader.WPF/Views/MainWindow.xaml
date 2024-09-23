@@ -26,24 +26,28 @@
                 </Border>
             </StackPanel>
 
-            <Border  Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Padding="80,0,80,0">
+            <Border  Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Padding="120,0,120,0">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBox Grid.Column="0" Text="{Binding Path=VideoSearchTerm}" Style="{StaticResource MaterialDesignTextBox}"></TextBox>
-                    <Button Grid.Column="1" Command="{Binding Path=SearchVideos}" Style="{StaticResource MaterialDesignToolButton}" Content="{Binding Path=magnifying-glass:16:Azure, Source={StaticResource IconLoader}}" Width="30"></Button>
+                    <TextBox Grid.Column="0" Text="{Binding Path=VideoSearchTerm}" Style="{StaticResource MaterialDesignTextBox}" VerticalAlignment="Center"></TextBox>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button  Command="{Binding Path=SearchVideos}" Style="{StaticResource MaterialDesignIconButton}" Content="{Binding Path=magnifying-glass:16:Azure, Source={StaticResource IconLoader}}" Width="35" Height="35" Cursor="Hand"></Button>
+                        <Button  Command="{Binding Path=NavigateToOptions}" Style="{StaticResource MaterialDesignIconButton}" Content="{Binding Path=gears:16:Azure, Source={StaticResource IconLoader}}" Width="35" Height="35"></Button>
+
+                    </StackPanel>
                 </Grid>
             </Border>
 
             <Border BorderThickness="0,0,0,0" BorderBrush="DimGray" Height="50" Grid.Column="2">
                 <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Center">
-                    <Button Content="{Binding Path=window-minimize:16:Azure, Source={StaticResource IconLoader}}" Width="40" Background="Azure" Style="{StaticResource MaterialDesignToolForegroundButton}" 
+                    <Button Content="{Binding Path=window-minimize:16:Azure, Source={StaticResource IconLoader}}" Width="40" Height="40" Foreground="Azure" Style="{StaticResource MaterialDesignIconButton}" 
                         VerticalAlignment="Center" Padding="0" Command="{Binding WindowMinimize}"/>
-                    <Button Content="{Binding Path=window-maximize:16:Azure, Source={StaticResource IconLoader}}" Width="40" Foreground="Azure" Style="{StaticResource MaterialDesignToolForegroundButton}" 
+                    <Button Content="{Binding Path=window-maximize:16:Azure, Source={StaticResource IconLoader}}" Width="40" Height="40" Foreground="Azure" Style="{StaticResource MaterialDesignIconButton}" 
                         VerticalAlignment="Center" Padding="0" Command="{Binding WindowMaximize}"/>
-                    <Button Content="{Binding Path=xmark:16:Azure, Source={StaticResource IconLoader}}" Width="40" Foreground="Azure" Style="{StaticResource MaterialDesignToolForegroundButton}" 
+                    <Button Content="{Binding Path=xmark:16:Azure, Source={StaticResource IconLoader}}" Width="40" Height="40" Foreground="Azure" Style="{StaticResource MaterialDesignIconButton}" 
                         VerticalAlignment="Center" Padding="0" Command="{Binding WindowClose}"/>
                 </StackPanel>
             </Border>

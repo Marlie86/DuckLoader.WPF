@@ -12,6 +12,9 @@ using System.Windows.Input;
 using Microsoft.Extensions.DependencyInjection;
 using DuckLoader.WPF.Views;
 using DuckLoader.WPF.Utilities;
+using AngleSharp;
+using Microsoft.Extensions.Configuration;
+using System.Configuration;
 
 namespace DuckLoader.WPF.ViewModels;
 /// <summary>
@@ -26,7 +29,7 @@ public class MainWindowViewModel : BaseViewModel
     private readonly NavigationService navigationService;
 
     private readonly SessionContext sessionContext;
-
+    private readonly Microsoft.Extensions.Configuration.IConfiguration configuration;
     private object _CurrentPage;
 
     private ICommand _SearchVideos;
@@ -49,13 +52,18 @@ public class MainWindowViewModel : BaseViewModel
     /// <param name="mediator">The mediator instance.</param>
     /// <param name="navigationService">The navigation service instance.</param>
     /// <param name="sessionContext">The session context instance.</param>
-    public MainWindowViewModel(IMediator mediator, NavigationService navigationService, SessionContext sessionContext)
+    public MainWindowViewModel(IMediator mediator, NavigationService navigationService, SessionContext sessionContext, Microsoft.Extensions.Configuration.IConfiguration configuration)
     {
         this.mediator = mediator;
         this.navigationService = navigationService;
         this.sessionContext = sessionContext;
+        this.configuration = configuration;
         navigationService.OnNavigateToHandler += OnNavigateToHandler;
-        CurrentPage = AppStatics.ServiceProvider.GetRequiredService<VideoList>();
+        if (configuration.GetValue<bool>("FirstTime") == true)
+        {
+            CurrentPage = AppStatics.ServiceProvider.GetRequiredService<Options>();
+        }
+        //C
     }
 
     #endregion Public Constructors
@@ -88,6 +96,18 @@ public class MainWindowViewModel : BaseViewModel
                     });
             }
             return _SearchVideos;
+        }
+    }
+
+    public ICommand NavigateToOptions
+    {
+        get
+        {
+            return new RelayCommand<object>(
+                async (p) =>
+                {
+                    navigationService.NavigateTo(AppStatics.ServiceProvider.GetRequiredService<Options>());
+                });
         }
     }
 

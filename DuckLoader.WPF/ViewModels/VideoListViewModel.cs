@@ -113,6 +113,10 @@ public class VideoListViewModel : BaseViewModel
     public async void SearchVideos()
     {
         IsLoading = true;
+        if (NextPage.Equals("end", StringComparison.InvariantCultureIgnoreCase))
+        {
+            return;
+        }
         (NextPage, var list) = await mediator.Send(new SearchVideoCommand() { VideoSearchTerm = VideoSearchTerm, PageToken = NextPage });
         list.ForEach(video => Videos.Add(video));
         IsLoading = false;
