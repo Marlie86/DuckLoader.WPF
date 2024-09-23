@@ -52,6 +52,7 @@ public class MainWindowViewModel : BaseViewModel
     /// <param name="mediator">The mediator instance.</param>
     /// <param name="navigationService">The navigation service instance.</param>
     /// <param name="sessionContext">The session context instance.</param>
+    /// <param name="configuration">The configuration instance.</param>
     public MainWindowViewModel(IMediator mediator, NavigationService navigationService, SessionContext sessionContext, Microsoft.Extensions.Configuration.IConfiguration configuration)
     {
         this.mediator = mediator;
@@ -63,7 +64,6 @@ public class MainWindowViewModel : BaseViewModel
         {
             CurrentPage = AppStatics.ServiceProvider.GetRequiredService<Options>();
         }
-        //C
     }
 
     #endregion Public Constructors
@@ -91,7 +91,7 @@ public class MainWindowViewModel : BaseViewModel
                 _SearchVideos = new RelayCommand<object>(
                     async (p) =>
                     {
-                        sessionContext.VideoSearch = VideoSearchTerm;
+                        sessionContext.VideoSearch = p as string;
                         navigationService.NavigateTo(AppStatics.ServiceProvider.GetRequiredService<VideoList>());
                     });
             }
@@ -99,6 +99,9 @@ public class MainWindowViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Gets the command to navigate to options.
+    /// </summary>
     public ICommand NavigateToOptions
     {
         get
@@ -138,6 +141,7 @@ public class MainWindowViewModel : BaseViewModel
             return _WindowClose;
         }
     }
+
     /// <summary>
     /// Gets the command to maximize or restore the window.
     /// </summary>

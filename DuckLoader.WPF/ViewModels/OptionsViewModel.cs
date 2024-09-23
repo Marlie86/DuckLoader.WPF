@@ -16,11 +16,17 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace DuckLoader.WPF.ViewModels;
+/// <summary>
+/// Represents the view model for the options view.
+/// </summary>
 public class OptionsViewModel : BaseViewModel
 {
     private IConfiguration configuration;
     private ICommand openDirectoryPicker;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether to use the YouTube API.
+    /// </summary>
     public bool UseYoutubeApi
     {
         get
@@ -34,6 +40,10 @@ public class OptionsViewModel : BaseViewModel
             SaveSettings();
         }
     }
+
+    /// <summary>
+    /// Gets or sets the YouTube API key.
+    /// </summary>
     public string YoutubeApiKey
     {
         get
@@ -48,6 +58,9 @@ public class OptionsViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Gets or sets the download directory.
+    /// </summary>
     public string DownloadDirectory
     {
         get
@@ -62,8 +75,13 @@ public class OptionsViewModel : BaseViewModel
         }
     }
 
-    public ICommand OpenDirectoryPicker { 
-        get {
+    /// <summary>
+    /// Gets the command to open the directory picker.
+    /// </summary>
+    public ICommand OpenDirectoryPicker
+    {
+        get
+        {
             return new RelayCommand<string>(p =>
             {
                 var folderOptionsDialog = new OpenFolderDialog()
@@ -76,15 +94,22 @@ public class OptionsViewModel : BaseViewModel
                     DownloadDirectory = folderOptionsDialog.FolderName;
                 }
             });
-        } 
+        }
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="OptionsViewModel"/> class.
+    /// </summary>
+    /// <param name="configuration">The configuration.</param>
     public OptionsViewModel(IConfiguration configuration)
     {
         this.configuration = configuration;
         SaveSettings();
     }
 
+    /// <summary>
+    /// Saves the settings to the configuration file.
+    /// </summary>
     private void SaveSettings()
     {
         var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");

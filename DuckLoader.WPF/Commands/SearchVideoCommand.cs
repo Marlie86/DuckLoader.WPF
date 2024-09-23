@@ -20,5 +20,9 @@ public class SearchVideoCommand : IRequest<(string, List<VideoSearchResultModel>
     /// Gets or sets the search term for the video.
     /// </summary>
     public string VideoSearchTerm { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the page token for pagination.
+    /// </summary>
     public string PageToken { get; set; } = string.Empty;
 }

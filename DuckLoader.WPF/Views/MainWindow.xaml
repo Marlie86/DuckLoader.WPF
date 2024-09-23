@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="1000" WindowStyle="None"
         DataContext="{Binding Path=MainWindowViewModel, Source={StaticResource ViewModelLocator}}" 
-        Style="{StaticResource MaterialDesignWindow}">
+        Style="{StaticResource MaterialDesignWindow}"
+        Icon="{Binding Path=duck:24:White, Source={StaticResource IconLoader}}">
     <!-- The main window of the DuckLoader application -->
     <DockPanel LastChildFill="True">
         <Grid x:Name="TopBar" DockPanel.Dock="Top" Height="50" Background="{Binding Path=Teal, Source={StaticResource ColorService}}">
@@ -22,7 +23,10 @@
 
             <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
                 <Border BorderThickness="0,0,0,0" BorderBrush="DimGray" Height="50" Padding="10, 0, 10, 0" VerticalAlignment="Center">
-                    <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}" Foreground="Azure" VerticalAlignment="Center">DuckLoader</TextBlock>
+                    <StackPanel Orientation="Horizontal">
+                        <ContentPresenter Content="{Binding Path=duck:24:White, Source={StaticResource IconLoader}}" VerticalAlignment="Center" Width="35" Height="30" Margin="0,0,10,0"></ContentPresenter>
+                        <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}" Foreground="Azure" VerticalAlignment="Center">DuckLoader</TextBlock>
+                    </StackPanel>
                 </Border>
             </StackPanel>
 
@@ -32,11 +36,14 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBox Grid.Column="0" Text="{Binding Path=VideoSearchTerm}" Style="{StaticResource MaterialDesignTextBox}" VerticalAlignment="Center"></TextBox>
+                    <TextBox Grid.Column="0" Text="{Binding Path=VideoSearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignTextBox}" VerticalAlignment="Center" AcceptsReturn="True">
+                        <TextBox.InputBindings>
+                            <KeyBinding Command="{Binding Path=SearchVideos}" CommandParameter="{Binding Path=VideoSearchTerm}" Key="Enter"  />
+                        </TextBox.InputBindings>
+                    </TextBox>
                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Button  Command="{Binding Path=SearchVideos}" Style="{StaticResource MaterialDesignIconButton}" Content="{Binding Path=magnifying-glass:16:Azure, Source={StaticResource IconLoader}}" Width="35" Height="35" Cursor="Hand"></Button>
+                        <Button  Command="{Binding Path=SearchVideos}" CommandParameter="{Binding Path=VideoSearchTerm}" Style="{StaticResource MaterialDesignIconButton}" Content="{Binding Path=magnifying-glass:16:Azure, Source={StaticResource IconLoader}}" Width="35" Height="35"></Button>
                         <Button  Command="{Binding Path=NavigateToOptions}" Style="{StaticResource MaterialDesignIconButton}" Content="{Binding Path=gears:16:Azure, Source={StaticResource IconLoader}}" Width="35" Height="35"></Button>
-
                     </StackPanel>
                 </Grid>
             </Border>

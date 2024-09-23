@@ -7,10 +7,13 @@ using Duckpond.WPF.Common.Utilities;
 
 using MediatR;
 
+using Microsoft.Extensions.Configuration;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,6 +32,7 @@ public class VideoListViewModel : BaseViewModel
     #region Private Fields
 
     private readonly IMediator mediator;
+    private readonly IConfiguration configuration;
     private readonly SessionContext sessionContext;
     private bool isLoading = false;
     private ObservableCollection<VideoSearchResultModel> videos = new ObservableCollection<VideoSearchResultModel>();
@@ -43,10 +47,12 @@ public class VideoListViewModel : BaseViewModel
     /// </summary>
     /// <param name="sessionContext">The session context.</param>
     /// <param name="mediator">The mediator.</param>
-    public VideoListViewModel(SessionContext sessionContext, IMediator mediator)
+    /// <param name="configuration">The configuration.</param>
+    public VideoListViewModel(SessionContext sessionContext, IMediator mediator, IConfiguration configuration)
     {
         this.sessionContext = sessionContext;
         this.mediator = mediator;
+        this.configuration = configuration;
         VideoSearchTerm = string.IsNullOrEmpty(sessionContext.VideoSearch) ? "musik" : $"musik {sessionContext.VideoSearch}";
         SearchVideos();
     }
@@ -59,6 +65,11 @@ public class VideoListViewModel : BaseViewModel
     /// Gets the command for downloading a video.
     /// </summary>
     public ICommand DownloadVideoCommand { get { return new RelayCommand<VideoSearchResultModel>(DownloadVideo); } }
+
+    /// <summary>
+    /// Gets the command for opening the download directory.
+    /// </summary>
+    public ICommand OpenDownloadDirectory { get { return new RelayCommand<VideoSearchResultModel>(p => Process.Start("explorer.exe", configuration.GetValue<string>("DownloadDirectory"))); } }
 
     /// <summary>
     /// Gets or sets a value indicating whether the view model is currently loading.
@@ -94,7 +105,11 @@ public class VideoListViewModel : BaseViewModel
     /// </summary>
     public string VideoSearchTerm { get => videoSearchTerm; set { videoSearchTerm = value; OnPropertyChanged(); } }
 
+    /// <summary>
+    /// Gets or sets the next page token for pagination.
+    /// </summary>
     public string NextPage { get; set; } = string.Empty;
+
     #endregion Public Properties
 
     #region Private Methods
@@ -102,20 +117,20 @@ public class VideoListViewModel : BaseViewModel
     /// <summary>
     /// Downloads a video.
     /// </summary>
-    /// <param name="videoUrl">The URL of the video to download.</param>
+    /// <param name="item">The video search result model.</param>
     private async void DownloadVideo(VideoSearchResultModel item)
     {
         item.IsDownloading = Visibility.Visible;
-        await Task.Delay(2000);
-        //await mediator.Send(new LoadVideoCommand() { VideoUrl = item.Url });
+        await mediator.Send(new LoadVideoCommand() { VideoUrl = item.Url });
         item.IsDownloading = Visibility.Collapsed;
+        item.IsDownloaded = Visibility.Visible;
         OnPropertyChanged(nameof(Videos));
     }
 
     /// <summary>
     /// Searches for videos.
     /// </summary>
-    public async void SearchVideos()
+    private async void SearchVideos()
     {
         IsLoading = true;
         if (!NextPage.Equals("end", StringComparison.InvariantCultureIgnoreCase))

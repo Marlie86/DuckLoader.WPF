@@ -48,13 +48,15 @@
                                     <TextBlock Text="{Binding Path=Title}" VerticalAlignment="Top" Style="{StaticResource MaterialDesignSubtitle1TextBlock}"></TextBlock>
                                     <TextBlock Text="{Binding Path=Author}" Style="{StaticResource MaterialDesignCaptionTextBlock}"></TextBlock>
                                 </StackPanel>
-                                <Button Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,20,0"
-                                        Command="{Binding Source={StaticResource dataContextSpy}, Path=DataContext.DownloadVideoCommand}" CommandParameter="{Binding}"
-                                        Content="{Binding Path=download:20:Teal, Source={StaticResource IconLoader}}" Style="{StaticResource MaterialDesignFlatButton}"/>
-
+                                <Menu Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="40">
+                                    <MenuItem Header="{Binding Path=folder-open:20:Teal, Source={StaticResource IconLoader}}" Command="{Binding Source={StaticResource dataContextSpy}, Path=DataContext.OpenDownloadDirectory}" Padding="5" CommandParameter="{Binding}"></MenuItem>
+                                    <MenuItem Header="{Binding Path=download:20:Teal, Source={StaticResource IconLoader}}" Command="{Binding Source={StaticResource dataContextSpy}, Path=DataContext.DownloadVideoCommand}" Padding="5" CommandParameter="{Binding}"></MenuItem>
+                                </Menu>
+                                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Visibility="{Binding Path=IsDownloaded}" Style="{StaticResource MaterialDesignCaptionTextBlock}" HorizontalAlignment="Center" VerticalAlignment="Bottom">Downloaded</TextBlock>
                             </Grid>
 
                             <ProgressBar Visibility="{Binding Path=IsDownloading}" IsIndeterminate="True" Minimum="0" Maximum="100" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"></ProgressBar>
+                            <ProgressBar Visibility="{Binding Path=IsDownloaded}" IsIndeterminate="False" Value="100" Minimum="0" Maximum="100" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"></ProgressBar>
                         </StackPanel>
                     </Border>
                 </DataTemplate>

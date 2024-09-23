@@ -52,30 +52,15 @@ public class SearchVideoCommandHandler : IRequestHandler<SearchVideoCommand, (st
         else
         {
             return await LoadSlow(request, cancellationToken);
-
-
-            // mock
-            //var searchResults = new List<VideoSearchResultModel>();
-            //var validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 -.,!\"'§&/(";
-            //var random = new Random();
-            //Enumerable.Range(0, 10).ToList().ForEach(i =>
-            //{
-            //    var randomLength = random.Next(5, 15);
-            //    var randomTitle = new string(Enumerable.Range(0, randomLength).Select(_ => validChars[random.Next(validChars.Length)]).ToArray());
-
-            //    searchResults.Add(new VideoSearchResultModel
-            //    {
-            //        Title = $"{randomTitle}",
-            //        Author = $"Author {randomTitle}",
-            //        Url = $"Url {randomTitle}",
-            //        ThumbnailUrl = $"ThumbnailUrl {randomTitle}"
-            //    });
-            //});
-            //await Task.Delay(20);
-            //return ("ABCBDJ", searchResults);
         }
     }
 
+    /// <summary>
+    /// Loads video search results using the YouTube API.
+    /// </summary>
+    /// <param name="request">The search video command.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A list of video search results.</returns>
     private async Task<(string, List<VideoSearchResultModel>)> LoadViaYoutubeApi(SearchVideoCommand request, CancellationToken cancellationToken)
     {
         try
@@ -117,6 +102,12 @@ public class SearchVideoCommandHandler : IRequestHandler<SearchVideoCommand, (st
         }
     }
 
+    /// <summary>
+    /// Loads video search results using a slower method.
+    /// </summary>
+    /// <param name="request">The search video command.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A list of video search results.</returns>
     private static async Task<(string, List<VideoSearchResultModel>)> LoadSlow(SearchVideoCommand request, CancellationToken cancellationToken)
     {
         var results = new List<VideoSearchResultModel>();
@@ -128,7 +119,8 @@ public class SearchVideoCommandHandler : IRequestHandler<SearchVideoCommand, (st
             Author = item.Author.ChannelTitle,
             Url = item.Url,
             ThumbnailUrl = item.Thumbnails.Count > 0 ? item.Thumbnails[0].Url : string.Empty,
-            IsDownloading = System.Windows.Visibility.Collapsed
+            IsDownloading = System.Windows.Visibility.Collapsed,
+            IsDownloaded = System.Windows.Visibility.Collapsed
         }));
         return ("end", results);
     }
