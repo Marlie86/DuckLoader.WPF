@@ -7,30 +7,31 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              DataContext="{Binding Path=OptionsViewModel, Source={StaticResource ViewModelLocator}}" Padding="10">
-    <StackPanel HorizontalAlignment="Stretch">
+    <Border Padding="5" Style="{StaticResource MaterialDesignToolBarMainPanelBorderStyle}">
+        <StackPanel HorizontalAlignment="Stretch">
+            <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}">Youtube API Key</TextBlock>
+            <Grid HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" Style="{StaticResource MaterialDesignTextBox}" Text="{Binding Path=YoutubeApiKey}"></TextBox>
+                <CheckBox Grid.Column="1" Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding Path=UseYoutubeApi}" VerticalAlignment="Center" Margin="10,0,10,0">
+                </CheckBox>
+                <TextBlock Grid.Column="2" Style="{StaticResource MaterialDesignBody1TextBlock}">Use Youtube API</TextBlock>
+            </Grid>
 
-        <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}">Youtube API Key</TextBlock>
-        <Grid HorizontalAlignment="Stretch">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <TextBox Grid.Column="0" Style="{StaticResource MaterialDesignTextBox}" Text="{Binding Path=YoutubeApiKey}"></TextBox>
-            <CheckBox Grid.Column="1" Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding Path=UseYoutubeApi}" VerticalAlignment="Center" Margin="10,0,10,0">
-            </CheckBox>
-            <TextBlock Grid.Column="2" Style="{StaticResource MaterialDesignBody1TextBlock}">Use Youtube API</TextBlock>
-        </Grid>
-
-        <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}" Margin="0,20,0,0">Download directory</TextBlock>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <TextBox Grid.Column="0" Style="{StaticResource MaterialDesignTextBox}" IsReadOnly="True" Text="{Binding DownloadDirectory}"></TextBox>
-            <Button Grid.Column="1" Style="{StaticResource MaterialDesignPaperButton}" Margin="10,0,0,0" Content="{Binding Path=folder:16:Azure, Source={StaticResource IconLoader}}"
+            <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}" Margin="0,20,0,0">Download directory</TextBlock>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" Style="{StaticResource MaterialDesignTextBox}" IsReadOnly="True" Text="{Binding DownloadDirectory}"></TextBox>
+                <Button Grid.Column="1" Style="{StaticResource MaterialDesignPaperButton}" Margin="10,0,0,0" Content="{Binding Path=folder:16:Azure, Source={StaticResource IconLoader}}"
                     Command="{Binding Path=OpenDirectoryPicker}"></Button>
-        </Grid>
-    </StackPanel>
+            </Grid>
+        </StackPanel>
+    </Border>
 </UserControl>

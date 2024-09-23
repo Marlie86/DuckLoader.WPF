@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
 
 using YoutubeExplode.Search;
@@ -57,7 +58,7 @@ public class VideoListViewModel : BaseViewModel
     /// <summary>
     /// Gets the command for downloading a video.
     /// </summary>
-    public ICommand DownloadVideoCommand { get { return new RelayCommand<string>(DownloadVideo); } }
+    public ICommand DownloadVideoCommand { get { return new RelayCommand<VideoSearchResultModel>(DownloadVideo); } }
 
     /// <summary>
     /// Gets or sets a value indicating whether the view model is currently loading.
@@ -102,9 +103,13 @@ public class VideoListViewModel : BaseViewModel
     /// Downloads a video.
     /// </summary>
     /// <param name="videoUrl">The URL of the video to download.</param>
-    private async void DownloadVideo(string videoUrl)
+    private async void DownloadVideo(VideoSearchResultModel item)
     {
-        await mediator.Send(new LoadVideoCommand() { VideoUrl = videoUrl });
+        item.IsDownloading = Visibility.Visible;
+        await Task.Delay(2000);
+        //await mediator.Send(new LoadVideoCommand() { VideoUrl = item.Url });
+        item.IsDownloading = Visibility.Collapsed;
+        OnPropertyChanged(nameof(Videos));
     }
 
     /// <summary>
@@ -113,12 +118,15 @@ public class VideoListViewModel : BaseViewModel
     public async void SearchVideos()
     {
         IsLoading = true;
-        if (NextPage.Equals("end", StringComparison.InvariantCultureIgnoreCase))
+        if (!NextPage.Equals("end", StringComparison.InvariantCultureIgnoreCase))
         {
-            return;
+            (NextPage, var list) = await mediator.Send(new SearchVideoCommand() { VideoSearchTerm = VideoSearchTerm, PageToken = NextPage });
+            var videostoAdd = Enumerable.Range(0, list.Count < 10 ? list.Count : 10).Select(i => list[i]).ToList();
+            videostoAdd.ForEach(video =>
+            {
+                Videos.Add(video);
+            });
         }
-        (NextPage, var list) = await mediator.Send(new SearchVideoCommand() { VideoSearchTerm = VideoSearchTerm, PageToken = NextPage });
-        list.ForEach(video => Videos.Add(video));
         IsLoading = false;
     }
 

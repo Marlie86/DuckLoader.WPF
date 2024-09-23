@@ -16,6 +16,7 @@
             <services:IconLoaderService x:Key="IconLoader" />
             <services:ColorService x:Key="ColorService" />
             <converter:UrlToImageConverter x:Key="UrlToImageConverter" />
+            <converter:BoolToVisibilityConverter x:Key="DuckBoolToVisibilityConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

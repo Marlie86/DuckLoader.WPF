@@ -45,7 +45,7 @@ public class LoadVideoCommandHandler(
 
         // Get all available muxed streams
         var streamManifest = await youtube.Videos.Streams.GetManifestAsync(video.Id);
-        var muxedStreams = streamManifest.GetMuxedStreams().OrderByDescending(s => s.VideoQuality).ToList();
+        var muxedStreams = streamManifest.GetMuxedStreams().OrderBy(s => s.VideoQuality).ToList();
 
         if (muxedStreams.Any())
         {

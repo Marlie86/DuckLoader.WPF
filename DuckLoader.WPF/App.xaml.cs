@@ -38,11 +38,11 @@ public partial class App : Application
         base.OnStartup(e);
         var builder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile("appsettings.development.json", optional: true, reloadOnChange: true);
         AppStatics.Configuration = builder.Build();
 
         var serviceCollection = new ServiceCollection();
-        serviceCollection.AddSingleton<IConfiguration>(AppStatics.Configuration);
         ConfigureServices(serviceCollection);
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         AppStatics.ServiceProvider = serviceCollection.BuildServiceProvider();
@@ -64,6 +64,8 @@ public partial class App : Application
         {
             config.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
         });
+
+        serviceCollection.AddSingleton<IConfiguration>(AppStatics.Configuration);
         serviceCollection.AddSingleton(mapper);
         serviceCollection.AddSingleton<Duckpond.WPF.Common.Services.NavigationService>();
         serviceCollection.AddSingleton<SessionContext>();

@@ -1,9 +1,12 @@
-﻿using DuckLoader.WPF.Commands;
+﻿
+using DuckLoader.WPF.Commands;
 using DuckLoader.WPF.Models;
 
 using Google.Apis.YouTube.v3;
 
 using MediatR;
+
+using Microsoft.Extensions.Configuration;
 
 using Newtonsoft.Json;
 
@@ -25,6 +28,13 @@ namespace DuckLoader.WPF.CommandHandler;
 /// </summary>
 public class SearchVideoCommandHandler : IRequestHandler<SearchVideoCommand, (string, List<VideoSearchResultModel>)>
 {
+    private readonly IConfiguration configuration;
+
+    public SearchVideoCommandHandler(IConfiguration configuration)
+    {
+        this.configuration = configuration;
+    }
+
     /// <summary>
     /// Handles the search video command and returns a list of video search results.
     /// </summary>
@@ -33,16 +43,51 @@ public class SearchVideoCommandHandler : IRequestHandler<SearchVideoCommand, (st
     /// <returns>A list of video search results.</returns>
     public async Task<(string, List<VideoSearchResultModel>)> Handle(SearchVideoCommand request, CancellationToken cancellationToken)
     {
-        try {
+        if (configuration.GetValue<bool>("YoutubeApiSettings:UseYoutubeApi") == true)
+        {
             //throw new Exception("Test");
+            return await LoadViaYoutubeApi(request, cancellationToken);
+
+        }
+        else
+        {
+            return await LoadSlow(request, cancellationToken);
+
+
+            // mock
+            //var searchResults = new List<VideoSearchResultModel>();
+            //var validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 -.,!\"'§&/(";
+            //var random = new Random();
+            //Enumerable.Range(0, 10).ToList().ForEach(i =>
+            //{
+            //    var randomLength = random.Next(5, 15);
+            //    var randomTitle = new string(Enumerable.Range(0, randomLength).Select(_ => validChars[random.Next(validChars.Length)]).ToArray());
+
+            //    searchResults.Add(new VideoSearchResultModel
+            //    {
+            //        Title = $"{randomTitle}",
+            //        Author = $"Author {randomTitle}",
+            //        Url = $"Url {randomTitle}",
+            //        ThumbnailUrl = $"ThumbnailUrl {randomTitle}"
+            //    });
+            //});
+            //await Task.Delay(20);
+            //return ("ABCBDJ", searchResults);
+        }
+    }
+
+    private async Task<(string, List<VideoSearchResultModel>)> LoadViaYoutubeApi(SearchVideoCommand request, CancellationToken cancellationToken)
+    {
+        try
+        {
             var youtubeService = new YouTubeService(new Google.Apis.Services.BaseClientService.Initializer()
             {
-                ApiKey = "AIzaSyBMd-wnPkFMf3u35jdcF_lvPFidTHZ2tnU"
+                ApiKey = configuration.GetValue<string>("YoutubeApiSettings:YoutubeApiKey")
             });
 
             var searchListRequest = youtubeService.Search.List("snippet");
             searchListRequest.Q = request.VideoSearchTerm;
-            searchListRequest.MaxResults = 10;
+            searchListRequest.MaxResults = configuration.GetValue<int>("YoutubeApiSettings:YoutubeApiMaxResults");
             searchListRequest.Type = "video";
             searchListRequest.SafeSearch = SearchResource.ListRequest.SafeSearchEnum.None;
             searchListRequest.PageToken = request.PageToken;
@@ -57,52 +102,34 @@ public class SearchVideoCommandHandler : IRequestHandler<SearchVideoCommand, (st
                     Title = item.Snippet.Title,
                     Author = item.Snippet.ChannelTitle,
                     Url = item.Id.VideoId,
-                    ThumbnailUrl = item.Snippet.Thumbnails.Default__.Url
+                    ThumbnailUrl = item.Snippet.Thumbnails.Default__.Url,
+                    IsDownloading = System.Windows.Visibility.Collapsed
                 };
                 results.Add(videoSearchResult);
             });
             var pageToken = string.IsNullOrEmpty(searchListResponse.NextPageToken) ? "end" : searchListResponse.NextPageToken;
 
             return (searchListResponse.NextPageToken, results);
-        } 
-        catch (Exception ex) 
-        {
-            var results = new List<VideoSearchResultModel>();
-            var youtubeClient = new YoutubeClient();
-            var loadingTask = await youtubeClient.Search.GetVideosAsync(request.VideoSearchTerm, cancellationToken);
-            results.AddRange(loadingTask.Select(item => new VideoSearchResultModel
-            {
-                Title = item.Title,
-                Author = item.Author.ChannelTitle,
-                Url = item.Url,
-                ThumbnailUrl = item.Thumbnails.Count > 0 ? item.Thumbnails[0].Url : string.Empty
-            }));
-            
-            if (results.Count > 0)
-            {
-                return ("end",results);
-            }
-
-
-            // mock
-            var searchResults = new List<VideoSearchResultModel>();
-            var validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 -.,!\"'§&/(";
-            var random = new Random();
-            Enumerable.Range(0, 10).ToList().ForEach(i =>
-            {
-                var randomLength = random.Next(5, 15);
-                var randomTitle = new string(Enumerable.Range(0, randomLength).Select(_ => validChars[random.Next(validChars.Length)]).ToArray());
-
-                searchResults.Add(new VideoSearchResultModel
-                {
-                    Title = $"{randomTitle}",
-                    Author = $"Author {randomTitle}",
-                    Url = $"Url {randomTitle}",
-                    ThumbnailUrl = $"ThumbnailUrl {randomTitle}"
-                });
-            });
-            await Task.Delay(20);
-            return ("ABCBDJ", searchResults);
         }
+        catch
+        {
+            return await LoadSlow(request, cancellationToken);
+        }
+    }
+
+    private static async Task<(string, List<VideoSearchResultModel>)> LoadSlow(SearchVideoCommand request, CancellationToken cancellationToken)
+    {
+        var results = new List<VideoSearchResultModel>();
+        var youtubeClient = new YoutubeClient();
+        var loadingTask = await youtubeClient.Search.GetVideosAsync(request.VideoSearchTerm, cancellationToken);
+        results.AddRange(loadingTask.Select(item => new VideoSearchResultModel
+        {
+            Title = item.Title,
+            Author = item.Author.ChannelTitle,
+            Url = item.Url,
+            ThumbnailUrl = item.Thumbnails.Count > 0 ? item.Thumbnails[0].Url : string.Empty,
+            IsDownloading = System.Windows.Visibility.Collapsed
+        }));
+        return ("end", results);
     }
 }

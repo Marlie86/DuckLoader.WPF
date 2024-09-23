@@ -30,26 +30,32 @@
             </ListBox.Resources>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Border Padding="5">
-                        <Grid HorizontalAlignment="Stretch">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="120"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="30"/>
-                            </Grid.RowDefinitions>
+                    <Border>
+                        <StackPanel>
+                            <Grid HorizontalAlignment="Stretch" Margin="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                            <Image Grid.Column="0" Source="{Binding Path=Thumbnail, Converter={StaticResource UrlToImageConverter}}"></Image>
-                            <StackPanel Grid.Column="1" Grid.RowSpan="2" Margin="10" VerticalAlignment="Top">
-                                <TextBlock Text="{Binding Path=Title}" Style="{StaticResource MaterialDesignHeadline5TextBlock}"></TextBlock>
-                                <TextBlock Text="{Binding Path=Author}" Style="{StaticResource MaterialDesignBody2TextBlock}"></TextBlock>
-                            </StackPanel>
-                            <Button Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,20,0"
-                                    Command="{Binding Source={StaticResource dataContextSpy}, Path=DataContext.DownloadVideoCommand}" CommandParameter="{Binding Path=Url}"
-                                    Content="{Binding Path=download:20:Teal, Source={StaticResource IconLoader}}" Style="{StaticResource MaterialDesignFlatButton}"/>
-                        </Grid>
+                                <Image Grid.Column="0" Grid.RowSpan="2" Source="{Binding Path=ThumbnailUrl}"></Image>
+                                <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Margin="10,0,0,0" VerticalAlignment="Stretch">
+                                    <TextBlock Text="{Binding Path=Title}" VerticalAlignment="Top" Style="{StaticResource MaterialDesignSubtitle1TextBlock}"></TextBlock>
+                                    <TextBlock Text="{Binding Path=Author}" Style="{StaticResource MaterialDesignCaptionTextBlock}"></TextBlock>
+                                </StackPanel>
+                                <Button Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,20,0"
+                                        Command="{Binding Source={StaticResource dataContextSpy}, Path=DataContext.DownloadVideoCommand}" CommandParameter="{Binding}"
+                                        Content="{Binding Path=download:20:Teal, Source={StaticResource IconLoader}}" Style="{StaticResource MaterialDesignFlatButton}"/>
+
+                            </Grid>
+
+                            <ProgressBar Visibility="{Binding Path=IsDownloading}" IsIndeterminate="True" Minimum="0" Maximum="100" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"></ProgressBar>
+                        </StackPanel>
                     </Border>
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -57,8 +63,7 @@
         <Border Visibility="{Binding Path=LoaderVisibility}" Background="{Binding Path=#1f1f1f, Source={StaticResource ColorService}}" VerticalAlignment="Bottom">
             <StackPanel>
                 <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" HorizontalAlignment="Center">Loading search results.</TextBlock>
-                <ProgressBar IsIndeterminate="True" Minimum="0" Maximum="100" 
-                VerticalAlignment="Bottom" HorizontalAlignment="Stretch"></ProgressBar>
+                <ProgressBar IsIndeterminate="True" Minimum="0" Maximum="100" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"></ProgressBar>
             </StackPanel>
         </Border>
     </Grid>
